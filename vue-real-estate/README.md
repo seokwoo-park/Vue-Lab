@@ -1,3 +1,3 @@
 # vue-real-estate
 
-to be updated...
+to be updated.
