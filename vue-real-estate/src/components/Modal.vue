@@ -4,7 +4,11 @@
       <h1>{{ products[modalProductNumber].title }}</h1>
       <img :src="products[modalProductNumber].image" class="room-img" />
       <p>{{ products[modalProductNumber].content }}</p>
-      <p>{{ products[modalProductNumber].price.toLocaleString() }} KRW</p>
+      <input v-model.number="month" />
+      <p>for {{ month }} months</p>
+      <p>
+        {{ products[modalProductNumber].price.toLocaleString() }} KRW /month
+      </p>
       <button @click="$emit('closeModal')">Close</button>
     </div>
   </div>
@@ -13,6 +17,19 @@
 <script>
 export default {
   name: "Modal",
+  data() {
+    return {
+      month: "",
+    };
+  },
+  watch: {
+    month(value) {
+      if (typeof value === "string" || value <= 0) {
+        this.month = 1;
+        alert("Only number allowed");
+      }
+    },
+  },
   props: {
     products: Array,
     modalProductNumber: Number,

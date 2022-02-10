@@ -1,17 +1,21 @@
 <template>
+  <transition name="fade">
+    <Modal
+      v-if="isModalOn === true"
+      @closeModal="isModalOn = false"
+      :products="products"
+      :modalProductNumber="modalProductNumber"
+    />
+  </transition>
+
   <header class="header-menu">
     <a href="#" v-for="item in menu" :key="item">
       {{ item }}
     </a>
   </header>
-
-  <Modal
-    v-if="isModalOn === true"
-    @closeModal="isModalOn = false"
-    :products="products"
-    :modalProductNumber="modalProductNumber"
-  />
   <Discount />
+
+  <button @click="priceSort">Sort by price</button>
 
   <ProductCard
     @openModal="
@@ -36,9 +40,22 @@ export default {
       isModalOn: false,
       menu: ["Home", "Products", "About"],
       products: productsData,
+      isSorted: false,
     };
   },
-  methods: {},
+  methods: {
+    priceSort() {
+      this.isSorted ? this.highPriceSort() : this.lowPriceSort();
+    },
+    highPriceSort() {
+      this.products.sort((a, b) => b.price - a.price);
+      this.isSorted = !this.isSorted;
+    },
+    lowPriceSort() {
+      this.products.sort((a, b) => a.price - b.price);
+      this.isSorted = !this.isSorted;
+    },
+  },
   components: {
     ProductCard,
     Discount,
@@ -48,6 +65,22 @@ export default {
 </script>
 
 <style>
+.fade-enter-from {
+  transform: translateY(-100vh);
+}
+.fade-enter-active {
+  transition: all 0.5s;
+}
+.fade-enter-to {
+  transform: translateY(0);
+}
+.fade-leave-active {
+  transition: all 0.5s;
+}
+.fade-leave-to {
+  transform: translateY(-100vh);
+}
+
 body {
   margin: 0;
   padding: 0;
