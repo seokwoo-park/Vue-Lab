@@ -1,12 +1,27 @@
 <template>
   <div class="discount-card">
-    <h2>ONLY Today 20% Discount rent-fee</h2>
+    <h2>ONLY Today {{ percentage }}% Discount rent-fee</h2>
   </div>
 </template>
 
 <script>
 export default {
   name: "DiscountCard",
+  data() {
+    return {
+      percentage: 25,
+    };
+  },
+  methods: {
+    dcInterval() {
+      this.percentage--;
+      if (this.percentage <= 1) clearInterval(this.interval);
+    },
+  },
+  mounted() {
+    this.interval = setInterval(this.dcInterval, 1000);
+  },
+  watch: {},
 };
 </script>
 

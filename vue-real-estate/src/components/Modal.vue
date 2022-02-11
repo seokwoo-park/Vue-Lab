@@ -22,11 +22,14 @@ export default {
       month: "",
     };
   },
+  updated() {
+    alert("Check the price");
+  },
   watch: {
-    month(value) {
-      if (typeof value === "string" || value <= 0) {
-        this.month = 1;
-        alert("Only number allowed");
+    month(value, prev) {
+      if (typeof value === "string" || value <= 0 || value > 12) {
+        this.month = prev;
+        alert("up to 12Months allowed");
       }
     },
   },
