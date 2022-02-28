@@ -37,18 +37,24 @@ write!</textarea
       >
     </div>
   </div>
+
+  <div v-if="tab === `myPage`">
+    <MyPage />
+  </div>
 </template>
 
 <script>
 import Post from "./Post.vue";
 import FilterBox from "./FilterBox.vue";
 import { ImgFilters } from "../data/ImgFilterList";
+import MyPage from "./MyPage.vue";
 
 export default {
   name: "app-container",
   components: {
     Post,
     FilterBox,
+    MyPage,
   },
   data() {
     return {

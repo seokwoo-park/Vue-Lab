@@ -22,6 +22,7 @@
     :imageURL="imageURL"
     @content="postContent = $event"
   />
+
   <button
     @click="$store.dispatch('getData', morePostCount), this.morePostCount++"
   >
@@ -46,7 +47,7 @@ export default {
   data() {
     return {
       morePostCount: 0,
-      tab: "post",
+      tab: "myPage",
       imageURL: "",
       postContent: "",
     };
