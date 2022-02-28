@@ -10,11 +10,13 @@
       :style="`background-image: url(${imageURL})`"
     ></div>
     <div class="filters">
-      <div class="filter-1"></div>
-      <div class="filter-1"></div>
-      <div class="filter-1"></div>
-      <div class="filter-1"></div>
-      <div class="filter-1"></div>
+      <FilterBox
+        :imageURL="imageURL"
+        v-for="(filter, index) in ImgFilters"
+        :filter="filter"
+        :key="index"
+        >{{ filter }}</FilterBox
+      >
     </div>
   </div>
 
@@ -26,6 +28,7 @@
     ></div>
     <div class="write">
       <textarea
+        placeholder="Write Something"
         class="write-box"
         v-model="content"
         @input="$emit('content', content)"
@@ -38,14 +41,19 @@ write!</textarea
 
 <script>
 import Post from "./Post.vue";
+import FilterBox from "./FilterBox.vue";
+import { ImgFilters } from "../data/ImgFilterList";
+
 export default {
   name: "app-container",
   components: {
     Post,
+    FilterBox,
   },
   data() {
     return {
       content: "",
+      ImgFilters,
     };
   },
   props: {

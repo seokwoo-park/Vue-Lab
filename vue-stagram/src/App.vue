@@ -1,6 +1,6 @@
 <template>
   <div v-if="tab !== `post`" class="header">
-    <ul class="header-button-left">
+    <ul @click="this.tab = `post`" class="header-button-left">
       <li>Cancel</li>
     </ul>
     <ul
@@ -17,12 +17,16 @@
   </div>
 
   <Container
-    :postData="postData"
+    :postData="$store.state.postData"
     :tab="tab"
     :imageURL="imageURL"
     @content="postContent = $event"
   />
-  <button @click="fetchMorePost">More Post</button>
+  <button
+    @click="$store.dispatch('getData', morePostCount), this.morePostCount++"
+  >
+    More Post
+  </button>
   <div class="footer">
     <ul class="footer-button-plus">
       <input @change="uploadImg" type="file" id="file" class="inputfile" />
@@ -33,8 +37,6 @@
 
 <script>
 import Container from "./components/Container.vue";
-import { postData } from "./data/postData";
-import axios from "axios";
 
 export default {
   name: "App",
@@ -43,7 +45,6 @@ export default {
   },
   data() {
     return {
-      postData,
       morePostCount: 0,
       tab: "post",
       imageURL: "",
@@ -51,18 +52,6 @@ export default {
     };
   },
   methods: {
-    fetchMorePost() {
-      axios
-        .get(
-          `https://codingapple1.github.io/vue/more${this.morePostCount}.json`
-        )
-        .then((res) => {
-          this.postData.push(res.data);
-          this.morePostCount++;
-        })
-        .catch(() => alert("No more posts"));
-    },
-
     uploadImg(e) {
       const file = e.target.files;
       this.imageURL = URL.createObjectURL(file[0]);
