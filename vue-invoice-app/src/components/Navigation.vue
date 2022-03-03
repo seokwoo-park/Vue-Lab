@@ -14,5 +14,5 @@ export default {
 
 <style lang="scss" scoped>
 @import "../assets/styles/_utilities.scss";
-@import "../assets/styles/navigation.scss";
+@import "../assets/styles/navigation/navigation.scss";
 </style>

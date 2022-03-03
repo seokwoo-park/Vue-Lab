@@ -23,7 +23,9 @@ onMounted(() => {
 <template>
   <div v-if="!mobile" class="app flex flex-column">
     <Navigation />
-    <div class="app-content flex flex-column"></div>
+    <div class="app-content flex flex-column">
+      <router-view />
+    </div>
   </div>
   <div v-else class="mobile-message flex flex-column">
     <h2>Sorry, this app is not supported on Mobile Devices</h2>
@@ -32,6 +34,6 @@ onMounted(() => {
 </template>
 
 <style lang="scss">
-@import "./assets/styles/app.scss";
+@import "./assets/styles/app/app.scss";
 @import "./assets/styles/_utilities.scss";
 </style>
