@@ -187,10 +187,12 @@
 
 <script>
 import { reactive, ref } from "@vue/reactivity";
+import { useStore } from "vuex";
 
 export default {
   name: "invoiceModal",
   setup() {
+    const store = useStore();
     const state = reactive({
       billerStreetAddress: null,
       billerCity: null,
@@ -214,8 +216,13 @@ export default {
       invoiceTotal: 0,
     });
 
+    /* close Modal Logic */
+    function closeInvoice() {
+      return store.commit("TOGGLE_INVOICE");
+    }
     return {
       ...state,
+      closeInvoice,
     };
   },
 };

@@ -1,8 +1,10 @@
 <script setup>
-import { onMounted, ref } from "@vue/runtime-core";
+import { computed, onMounted, ref } from "@vue/runtime-core";
 import Navigation from "./components/Navigation.vue";
 import InvoiceModal from "./components/InvoiceModal.vue";
+import { useStore } from "vuex";
 
+/* Mobile detect logic */
 const mobile = ref(null);
 
 function mobileDetect() {
@@ -14,18 +16,21 @@ function mobileDetect() {
     mobile.value = false;
   }
 }
-
 onMounted(() => {
   mobileDetect();
   window.addEventListener("resize", mobileDetect());
 });
+
+/* Invoice Toggle Logic */
+const invoiceToggle = computed(() => store.state.invoiceModal);
+const store = useStore();
 </script>
 
 <template>
   <div v-if="!mobile" class="app flex flex-column">
     <Navigation />
     <div class="app-content flex flex-column">
-      <InvoiceModal />
+      <InvoiceModal v-if="invoiceToggle" />
       <router-view />
     </div>
   </div>

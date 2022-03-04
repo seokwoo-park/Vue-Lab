@@ -29,22 +29,28 @@
 
 <script>
 import { ref } from "@vue/reactivity";
+import { useStore } from "vuex";
 export default {
   name: "Home",
   components: {},
 
   setup(props) {
+    const store = useStore();
     const filterMenu = ref(null);
 
-    function newInvoice() {}
+    function newInvoice() {
+      store.commit("TOGGLE_INVOICE");
+    }
 
     function toggleFilterMenu() {
       filterMenu.value = !filterMenu.value;
     }
 
     return {
+      newInvoice,
       filterMenu,
       toggleFilterMenu,
+      newInvoice,
     };
   },
 };
