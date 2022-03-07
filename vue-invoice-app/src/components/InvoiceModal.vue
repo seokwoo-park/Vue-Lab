@@ -186,14 +186,17 @@
 </template>
 
 <script>
-import { reactive, ref } from "@vue/reactivity";
+import { reactive, toRefs } from "@vue/reactivity";
 import { useStore } from "vuex";
+import { onMounted, watch } from "@vue/runtime-core";
+import { v4 as uid } from "uuid";
 
 export default {
   name: "invoiceModal",
   setup() {
     const store = useStore();
     const state = reactive({
+      dateOptions: { year: "numeric", month: "short", day: "numeric" },
       billerStreetAddress: null,
       billerCity: null,
       billerZipCode: null,
@@ -220,8 +223,50 @@ export default {
     function closeInvoice() {
       return store.commit("TOGGLE_INVOICE");
     }
+
+    /* Generate Invoice date Logic  */
+    onMounted(() => {
+      state.invoiceDateUnix = Date.now();
+      state.invoiceDate = new Date(state.invoiceDateUnix).toLocaleDateString(
+        "en-us",
+        state.dateOptions
+      );
+
+      watch(
+        () => state.paymentTerms,
+        () => {
+          const futureDate = new Date();
+          state.paymentDueDateUnix = futureDate.setDate(
+            futureDate.getDate() + parseInt(state.paymentTerms)
+          );
+          state.paymentDueDate = new Date(
+            state.paymentDueDateUnix
+          ).toLocaleString("en-us", state.dateOptions);
+        }
+      );
+    });
+
+    /* Add invoice item Logic */
+    function addNewInvoiceItem() {
+      state.invoiceItemList.push({
+        id: uid(),
+        itemName: "",
+        qty: "",
+        price: 0,
+        total: 0,
+      });
+    }
+
+    function deleteInvoiceItem(id) {
+      state.invoiceItemList = state.invoiceItemList.filter(
+        (item) => item.id !== id
+      );
+    }
+
     return {
-      ...state,
+      deleteInvoiceItem,
+      addNewInvoiceItem,
+      ...toRefs(state),
       closeInvoice,
     };
   },
