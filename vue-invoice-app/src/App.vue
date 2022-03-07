@@ -30,7 +30,9 @@ const store = useStore();
   <div v-if="!mobile" class="app flex flex-column">
     <Navigation />
     <div class="app-content flex flex-column">
-      <InvoiceModal v-if="invoiceToggle" />
+      <transition name="invoice">
+        <InvoiceModal v-if="invoiceToggle" />
+      </transition>
       <router-view />
     </div>
   </div>
