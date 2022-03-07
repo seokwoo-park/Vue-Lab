@@ -190,6 +190,8 @@ import { reactive, toRefs } from "@vue/reactivity";
 import { useStore } from "vuex";
 import { onMounted, watch } from "@vue/runtime-core";
 import { v4 as uid } from "uuid";
+import db from "../firebase/firebaseInit";
+import { collection, addDoc } from "@firebase/firestore";
 
 export default {
   name: "invoiceModal",
@@ -263,7 +265,65 @@ export default {
       );
     }
 
+    /* Sending Invoice Data Logic */
+
+    function publishInvoice() {
+      state.invoicePending = true;
+    }
+
+    function saveDrat() {
+      state.invoiceDraft = true;
+    }
+
+    function calInvoiceTotal() {
+      state.invoiceTotal = 0;
+      state.invoiceItemList.forEach((item) => {
+        state.invoiceTotal += item.total;
+      });
+    }
+
+    async function uploadInvoice() {
+      if (state.invoiceItemList.length <= 0) {
+        alert("Please ensure you filled out Invoice Items!");
+        return;
+      }
+
+      calInvoiceTotal();
+
+      await addDoc(collection(db, "invoices"), {
+        billerStreetAddress: state.billerStreetAddress,
+        billerCity: state.billerCity,
+        billerZipCode: state.billerZipCode,
+        billerCountry: state.billerCountry,
+        clientName: state.clientName,
+        clientEmail: state.clientEmail,
+        clientStreetAddress: state.clientStreetAddress,
+        clientCity: state.clientCity,
+        clientZipCode: state.clientZipCode,
+        clientCountry: state.clientCountry,
+        invoiceDateUnix: state.invoiceDateUnix,
+        invoiceDate: state.invoiceDate,
+        paymentTerms: state.paymentTerms,
+        paymentDueDateUnix: state.paymentDueDateUnix,
+        paymentDueDate: state.paymentDueDate,
+        productDescription: state.productDescription,
+        invoicePending: state.invoicePending,
+        invoiceDraft: state.invoiceDraft,
+        invoiceItemList: state.invoiceItemList,
+        invoiceTotal: state.invoiceTotal,
+      });
+
+      closeInvoice();
+    }
+
+    function submitForm() {
+      uploadInvoice();
+    }
+
     return {
+      publishInvoice,
+      saveDrat,
+      submitForm,
       deleteInvoiceItem,
       addNewInvoiceItem,
       ...toRefs(state),

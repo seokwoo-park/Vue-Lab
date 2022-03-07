@@ -1,8 +1,10 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
+// dotenv.config();
+
 const firebaseConfig = {
-  apiKey: "AIzaSyA61g_rYbP6kWep_CJ9jOP3yx5VXVrLiWU",
+  apiKey: import.meta.env.VUE_APP_FIREBASE,
   authDomain: "invoice-app-vue-e0a37.firebaseapp.com",
   projectId: "invoice-app-vue-e0a37",
   storageBucket: "invoice-app-vue-e0a37.appspot.com",
