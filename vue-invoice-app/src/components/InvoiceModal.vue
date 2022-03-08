@@ -1,6 +1,7 @@
 <template>
   <div @click="checkClick" ref="invoiceWrap" class="invoice-wrap flex-column">
     <form @submit.prevent="submitForm" class="invoice-content">
+      <Loading v-show="loading" />
       <h1>New Invoice</h1>
 
       <!-- Bill From -->
@@ -192,12 +193,17 @@ import { onMounted, watch } from "@vue/runtime-core";
 import { v4 as uid } from "uuid";
 import db from "../firebase/firebaseInit";
 import { collection, addDoc } from "@firebase/firestore";
+import Loading from "./Loading.vue";
 
 export default {
   name: "invoiceModal",
+  components: {
+    Loading,
+  },
   setup() {
     const store = useStore();
     const state = reactive({
+      loading: null,
       dateOptions: { year: "numeric", month: "short", day: "numeric" },
       billerStreetAddress: null,
       billerCity: null,
@@ -288,6 +294,8 @@ export default {
         return;
       }
 
+      state.loading = true;
+
       calInvoiceTotal();
 
       await addDoc(collection(db, "invoices"), {
@@ -312,6 +320,8 @@ export default {
         invoiceItemList: state.invoiceItemList,
         invoiceTotal: state.invoiceTotal,
       });
+
+      state.loading = false;
 
       closeInvoice();
     }
