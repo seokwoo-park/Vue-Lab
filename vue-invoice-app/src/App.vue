@@ -2,10 +2,12 @@
 import { computed, onMounted, ref } from "@vue/runtime-core";
 import Navigation from "./components/Navigation.vue";
 import InvoiceModal from "./components/InvoiceModal.vue";
+import CloseModal from "./components/CloseModal.vue";
 import { useStore } from "vuex";
 
 /* Mobile detect logic */
 const mobile = ref(null);
+const closeModalActive = ref(null);
 
 function mobileDetect() {
   const windowWidth = window.innerWidth;
@@ -24,14 +26,27 @@ onMounted(() => {
 /* Invoice Toggle Logic */
 const invoiceToggle = computed(() => store.state.invoiceModal);
 const store = useStore();
+
+function closeInvoice() {
+  store.commit("TOGGLE_INVOICE");
+  closeModalActive.value = false;
+}
 </script>
 
 <template>
   <div v-if="!mobile" class="app flex flex-column">
     <Navigation />
     <div class="app-content flex flex-column">
+      <CloseModal
+        v-show="closeModalActive"
+        @closeModal="closeModalActive = false"
+        @closeInvoice="closeInvoice"
+      />
       <transition name="invoice">
-        <InvoiceModal v-if="invoiceToggle" />
+        <InvoiceModal
+          v-if="invoiceToggle"
+          @closeInvoiceModal="closeModalActive = true"
+        />
       </transition>
       <router-view />
     </div>

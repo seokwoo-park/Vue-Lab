@@ -1,5 +1,5 @@
 <template>
-  <div @click="checkClick" ref="invoiceWrap" class="invoice-wrap flex-column">
+  <div @click="checkClick" ref="invoiceRef" class="invoice-wrap flex-column">
     <form @submit.prevent="submitForm" class="invoice-content">
       <Loading v-show="loading" />
       <h1>New Invoice</h1>
@@ -187,7 +187,7 @@
 </template>
 
 <script>
-import { reactive, toRefs } from "@vue/reactivity";
+import { reactive, ref, toRefs } from "@vue/reactivity";
 import { useStore } from "vuex";
 import { onMounted, watch } from "@vue/runtime-core";
 import { v4 as uid } from "uuid";
@@ -200,8 +200,13 @@ export default {
   components: {
     Loading,
   },
-  setup() {
+  props: {
+    closeModalActive: Boolean,
+  },
+  emits: ["closeInvoiceModal"],
+  setup(props, { emit }) {
     const store = useStore();
+    const invoiceRef = ref(null);
     const state = reactive({
       loading: null,
       dateOptions: { year: "numeric", month: "short", day: "numeric" },
@@ -227,9 +232,15 @@ export default {
       invoiceTotal: 0,
     });
 
-    /* close Modal Logic */
+    /* Invoice Modal Logic */
     function closeInvoice() {
       return store.commit("TOGGLE_INVOICE");
+    }
+
+    function checkClick(e) {
+      if (e.target === invoiceRef.value) {
+        emit("closeInvoiceModal");
+      }
     }
 
     /* Generate Invoice date Logic  */
@@ -338,6 +349,8 @@ export default {
       addNewInvoiceItem,
       ...toRefs(state),
       closeInvoice,
+      checkClick,
+      invoiceRef,
     };
   },
 };
